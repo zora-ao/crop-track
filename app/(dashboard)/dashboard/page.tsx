@@ -11,7 +11,13 @@ const DashboardPage = async() => {
 
     return (
         <div>
-            <h1>This is the Dashboard page</h1>
+            <h1 className="text-3xl font-bold">
+                Dashboard
+            </h1>
+
+            <p className="text-muted-foreground mt-2">
+                Welcome to FarmTrack.
+            </p>
         </div>
     )
 }

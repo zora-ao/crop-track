@@ -6,8 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Input } from "../input";
-import { Button } from "../button";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 
 const LoginForm = () => {

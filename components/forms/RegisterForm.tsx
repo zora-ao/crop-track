@@ -7,8 +7,8 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { RegisterSchema, RegisterInput } from "@/lib/validations/register.schema"
-import { Input } from "../input"
-import { Button } from "../button"
+import { Input } from "../ui/input"
+import { Button } from "../ui/button"
 
 const RegisterForm = () => {
     const router = useRouter();
