@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 type CropFormProps = {
     onSuccess?: () => void;
@@ -18,6 +19,7 @@ const CropForm = ({
 
     const {
         register,
+        reset,
         handleSubmit,
         formState: { errors, isSubmitting }
     } = useForm<CropInput>({
@@ -43,6 +45,11 @@ const CropForm = ({
             alert("Failed to create crop");
             return;
         }
+
+        reset();
+        onSuccess?.();
+        toast.success("Crop created Successfully");
+
     };
 
     return (

@@ -34,3 +34,33 @@ export async function POST(req: Request) {
         )
     }
 }
+
+export async function GET() {
+    try {
+        const session = await auth();
+
+        if (!session){
+            return NextResponse.json(
+                { message: "Unauthorized" },
+                { status: 401 }
+            )
+        }
+
+        await connectDB();
+
+        const crops = await Crop.find({
+            userId: session.user.id,
+        }).sort({
+            createdAt: -1
+        });
+
+        return NextResponse.json(crops)
+    } catch (error) {
+        console.error(error);
+
+        return NextResponse.json(
+            { message: "Server Error" },
+            { status: 500 }
+        )
+    }
+}

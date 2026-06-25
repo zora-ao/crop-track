@@ -1,6 +1,7 @@
 import CropSheet from "@/components/crops/CropSheet";
+import CropList from "@/components/crops/CropList";
 
-export default function CropsPage() {
+const CropsPage = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -11,9 +12,9 @@ export default function CropsPage() {
         <CropSheet />
       </div>
 
-      <div>
-        No crops yet.
-      </div>
+      <CropList />
     </div>
   );
 }
+
+export default CropsPage
