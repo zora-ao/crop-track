@@ -7,7 +7,7 @@ export default function NewCropPage() {
                 Add Crop
             </h1>
 
-            <CropForm />
+            <CropForm mode="create" />
         </div>
     );
 }

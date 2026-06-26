@@ -2,20 +2,27 @@
 
 import { CropInput, CropSchema } from "@/lib/validations/crop.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation"
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCreateCrop } from "@/hooks/useCreateCrop";
 
 type CropFormProps = {
     onSuccess?: () => void;
+    defaultValues?: Partial<CropInput>;
+    mode?: "create" | "edit";
+    cropId?: string;
 };
 
 const CropForm = ({
-    onSuccess
+    onSuccess,
+    defaultValues,
+    mode,
+    cropId
 }: CropFormProps) => {
-    const router = useRouter();
+    
+    const queryClient = useQueryClient();
 
     const {
         register,
@@ -27,28 +34,29 @@ const CropForm = ({
 
         defaultValues: {
             areaUnit: "sqm",
+            ...defaultValues
         },
+    });
+
+    const createCropMutation = useCreateCrop(() => {
+        reset();
+        onSuccess?.();
     });
 
     const onSubmit: SubmitHandler<CropInput> = async(
         data
     ) => {
-        const response = await fetch("/api/crops", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data),
-        });
 
-        if (!response.ok){
-            alert("Failed to create crop");
-            return;
+        if (mode === "create"){
+            createCropMutation.mutate(data);
         }
 
-        reset();
-        onSuccess?.();
-        toast.success("Crop created Successfully");
+        if (mode === "edit"){
+            createCropMutation.mutate({
+                id: cropId!,
+                data,
+            });
+        }
 
     };
 

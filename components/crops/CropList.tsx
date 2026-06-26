@@ -3,36 +3,29 @@
 import { Crop } from "@/types/crop";
 import { useEffect, useState } from "react";
 import CropCard from "./CropCard";
+import { useCrops } from "@/hooks/useCrops";
 
 const CropList = () => {
-    const [crops, setCrops] = useState<Crop[]>([]);
-    const [loading, setLoading] = useState(true);
+    
+    const {
+        data: crops,
+        error,
+        isLoading
+    } = useCrops();
 
-    useEffect(() => {
-        async function fetchCrops() {
-        try {
-            const response =
-            await fetch("/api/crops");
-
-            const data =
-            await response.json();
-
-            setCrops(data);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-        }
-
-        fetchCrops();
-    }, []);
-
-    if (loading) {
+    if (isLoading) {
         return <p>Loading crops...</p>;
     }
 
-    if (crops.length === 0) {
+    if (error) {
+        return (
+        <p className="text-red-500">
+            Failed to load crops.
+        </p>
+        );
+    }
+
+    if (!crops?.length) {
         return (
         <p className="text-muted-foreground">
             No crops yet.
