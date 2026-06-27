@@ -5,8 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useQueryClient } from "@tanstack/react-query";
 import { useCreateCrop } from "@/hooks/useCreateCrop";
+import { useUpdateCrop } from "@/hooks/useUpdateCrop";
 
 type CropFormProps = {
     onSuccess?: () => void;
@@ -21,8 +21,6 @@ const CropForm = ({
     mode,
     cropId
 }: CropFormProps) => {
-    
-    const queryClient = useQueryClient();
 
     const {
         register,
@@ -43,21 +41,24 @@ const CropForm = ({
         onSuccess?.();
     });
 
+    const updateCropMutation = useUpdateCrop(() => {
+        onSuccess?.();
+    });
+
     const onSubmit: SubmitHandler<CropInput> = async(
         data
     ) => {
 
-        if (mode === "create"){
-            createCropMutation.mutate(data);
-        }
-
         if (mode === "edit"){
-            createCropMutation.mutate({
+            updateCropMutation.mutate({
                 id: cropId!,
-                data,
+                data
             });
+
+            return
         }
 
+        createCropMutation.mutate(data);
     };
 
     return (
@@ -117,9 +118,9 @@ const CropForm = ({
 
         <div>
             <Input
-            type="number"
-            placeholder="Area"
-            {...register("area", { valueAsNumber: true })}
+                type="number"
+                placeholder="Area"
+                {...register("area", { valueAsNumber: true })}
             />
 
             {errors.area && (
@@ -131,20 +132,43 @@ const CropForm = ({
 
         <div>
             <select
-            {...register("areaUnit")}
-            className="w-full border rounded-md p-2"
+                {...register("areaUnit")}
+                className="w-full border rounded-md p-2"
+                >
+                <option value="sqm">
+                    Square Meter
+                </option>
+
+                <option value="hectare">
+                    Hectare
+                </option>
+
+                <option value="acre">
+                    Acre
+                </option>
+            </select>
+        </div>
+
+        <div>
+            <select
+                {...register("status")}
+                className="w-full border rounded-md p-2"
             >
-            <option value="sqm">
-                Square Meter
-            </option>
+                <option value="planned">
+                    Planned
+                </option>
 
-            <option value="hectare">
-                Hectare
-            </option>
+                <option value="planted">
+                    Planted
+                </option>
 
-            <option value="acre">
-                Acre
-            </option>
+                <option value="growing">
+                    Growing
+                </option>
+
+                <option value="harvested">
+                    Harvested
+                </option>
             </select>
         </div>
 
@@ -159,11 +183,19 @@ const CropForm = ({
         <Button
             className="w-full"
             type="submit"
-            disabled={isSubmitting}
+            disabled={
+                isSubmitting ||
+                createCropMutation.isPending ||
+                updateCropMutation.isPending 
+            }
         >
-            {isSubmitting
-            ? "Creating..."
-            : "Create Crop"}
+            {mode === "edit"
+                ? updateCropMutation.isPending
+                    ? "Updating..."
+                    : "Update Crop"
+                : createCropMutation.isPending
+                    ? "Creating..."
+                    : "Create Crop"}
         </Button>
         </form>
     );

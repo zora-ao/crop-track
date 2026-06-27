@@ -10,6 +10,12 @@ export const CropSchema = z.object({
         .min(0.1, "Area must be greater than 0"),
     
     areaUnit: z.enum(["sqm", "hectare", "acre"]),
+    status: z.enum([
+        "planned",
+        "planted",
+        "growing",
+        "harvested",
+    ]),
     notes: z.string().optional(),
 });
 

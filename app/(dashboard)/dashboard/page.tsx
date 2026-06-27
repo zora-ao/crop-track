@@ -1,3 +1,4 @@
+import DashboardStats from "@/components/dashboard/DashboardStats";
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 
@@ -15,9 +16,7 @@ const DashboardPage = async() => {
                 Dashboard
             </h1>
 
-            <p className="text-muted-foreground mt-2">
-                Welcome to FarmTrack.
-            </p>
+            <DashboardStats />
         </div>
     )
 }

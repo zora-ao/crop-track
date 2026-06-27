@@ -10,26 +10,73 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { Button } from "@/components/ui/button";
 import CropForm from "../forms/CropForm";
+import { Crop } from "@/types/crop";
 
-export default function CropSheet() {
-  const [open, setOpen] = useState(false);
+type CropSheetProps = {
+  mode: "create" | "edit";
+  crop?: Crop;
+  trigger?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+};
+
+export default function CropSheet({
+  mode,
+  crop,
+  trigger,
+  open, 
+  onOpenChange
+}: CropSheetProps) {
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button>Add Crop</Button>
-      </SheetTrigger>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      {trigger && (
+        <SheetTrigger asChild>
+          {trigger}
+        </SheetTrigger>
+      )}
 
       <SheetContent className="overflow-y-auto sm:max-w-xl">
         <SheetHeader>
-          <SheetTitle>Add Crop</SheetTitle>
+          <SheetTitle>
+            {mode === "create"
+              ? "Add Crop"
+              : "Edit Crop"}
+          </SheetTitle>
         </SheetHeader>
 
-        <div className="mt-6">
+        <div className="mt-0">
           <CropForm
-            onSuccess={() => setOpen(false)}
+            mode={mode}
+            cropId={crop?._id}
+            defaultValues={
+              mode === "edit" && crop
+                ? {
+                    cropName: crop.cropName,
+                    cropType: crop.cropType,
+
+                    plantingDate:
+                      new Date(crop.plantingDate)
+                        .toISOString()
+                        .split("T")[0],
+
+                    expectedHarvestDate:
+                      crop.expectedHarvestDate
+                        ? new Date(
+                            crop.expectedHarvestDate
+                          )
+                            .toISOString()
+                            .split("T")[0]
+                        : "",
+
+                    area: crop.area,
+                    areaUnit: crop.areaUnit,
+                    notes: crop.notes,
+                  }
+                : undefined
+            }
+            onSuccess={() => onOpenChange?.(false)}
           />
         </div>
       </SheetContent>

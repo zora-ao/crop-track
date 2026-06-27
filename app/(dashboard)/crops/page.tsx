@@ -1,5 +1,6 @@
 import CropSheet from "@/components/crops/CropSheet";
 import CropList from "@/components/crops/CropList";
+import { Button } from "@/components/ui/button";
 
 const CropsPage = () => {
   return (
@@ -9,7 +10,12 @@ const CropsPage = () => {
           Crops
         </h1>
 
-        <CropSheet />
+        <CropSheet
+          mode="create"
+          trigger={
+            <Button>Add Crop</Button>
+          }
+        />
       </div>
 
       <CropList />
