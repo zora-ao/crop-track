@@ -4,6 +4,11 @@ export interface IUser extends Document {
     name: string;
     email: string;
     password: string;
+    farmLocation?: {
+        latitude: number;
+        longitude: number;
+        address: string;
+    };
 }
 
 const UserSchema = new Schema<IUser>(
@@ -20,6 +25,11 @@ const UserSchema = new Schema<IUser>(
         password: {
             type: String,
             required: true
+        },
+        farmLocation: {
+            latitude: Number,
+            longitude: Number,
+            address: String,
         },
     }, {
         timestamps: true,
