@@ -1,4 +1,4 @@
-import LocationSettings from "@/components/dashboard/LocationSettings";
+import LocationSettings from "@/components/dashboard/LocationSearch";
 
 
 export default function SettingsPage() {

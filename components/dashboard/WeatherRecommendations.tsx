@@ -15,6 +15,7 @@ export default function WeatherRecommendations() {
     return <p>No weather data available.</p>;
   }
 
+  console.log(data)
 
   const recommendations =
     getWeatherRecommendations(

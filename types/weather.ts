@@ -1,6 +1,10 @@
 export interface Weather {
-  temperature_2m: number;
-  relative_humidity_2m: number;
-  precipitation: number;
-  weather_code: number;
+  locationSet: boolean;
+  weather: {
+    temperature_2m: number;
+    relative_humidity_2m: number;
+    precipitation: number;
+    weather_code: number;
+  } | null;
+  
 }

@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import { NextResponse } from "next/server";
 
@@ -13,11 +14,11 @@ export async function GET() {
       );
     }
 
+    await connectDB();
+
     const user = await User.findById(
       session.user.id
     );
-
-    console.log("User:", user);
 
     if (!user) {
       return NextResponse.json(
@@ -26,16 +27,11 @@ export async function GET() {
       );
     }
 
-    console.log(
-      "Farm Location:",
-      user.farmLocation
-    );
-
     if (!user.farmLocation) {
-      return NextResponse.json(
-        { message: "Location not set" },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        locationSet: false,
+        weather: null
+      });
     }
 
     const lat = Number(
@@ -45,9 +41,6 @@ export async function GET() {
     const long = Number(
       user.farmLocation.longitude
     );
-
-    console.log("Latitude:", lat);
-    console.log("Longitude:", long);
 
     if (
       Number.isNaN(lat) ||
@@ -65,24 +58,9 @@ export async function GET() {
     const weatherUrl =
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current=temperature_2m,relative_humidity_2m,precipitation,weather_code`;
 
-    console.log(
-      "Weather URL:",
-      weatherUrl
-    );
-
     const res = await fetch(weatherUrl);
 
-    console.log(
-      "Weather Status:",
-      res.status
-    );
-
     const data = await res.json();
-
-    console.log(
-      "Full Weather Response:",
-      JSON.stringify(data, null, 2)
-    );
 
     if (!data.current) {
       return NextResponse.json(
@@ -106,14 +84,11 @@ export async function GET() {
         data.current.weather_code,
     };
 
-    console.log(
-      "Returning:",
-      currentWeather
-    );
-
-    return NextResponse.json(
-      currentWeather
-    );
+    return NextResponse.json({
+      locationSet: true,
+      weather: currentWeather,
+      address: user.farmLocation.address,
+    });
   } catch (error) {
     console.error(
       "Weather API Error:",

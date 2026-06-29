@@ -7,11 +7,7 @@ export async function PATCH(req: Request) {
   try {
     const session = await auth();
 
-    console.log("Session:", session);
-
     const body = await req.json();
-
-    console.log("Location Body:", body);
 
     await connectDB();
 
@@ -27,10 +23,9 @@ export async function PATCH(req: Request) {
       { new: true }
     );
 
-    console.log("Updated User:", updatedUser);
-
     return NextResponse.json({
       message: "Location saved",
+      user: updatedUser
     });
   } catch (error) {
     console.error(error);
