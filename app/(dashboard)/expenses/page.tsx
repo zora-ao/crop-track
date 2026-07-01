@@ -1,10 +1,18 @@
+import ExpenseList from "@/components/expenses/ExpenseList";
+import ExpenseDialog from "@/components/expenses/ExpenseDialog";
 
-const ExpensesPage = () => {
-    return (
-        <div>
-            Expenses Page
-        </div>
-    )
+export default function ExpensesPage() {
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between">
+        <h1 className="text-2xl font-bold">
+          Expenses
+        </h1>
+
+        <ExpenseDialog />
+      </div>
+
+      <ExpenseList />
+    </div>
+  );
 }
-
-export default ExpensesPage
