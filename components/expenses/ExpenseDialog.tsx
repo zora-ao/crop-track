@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Dialog,
@@ -13,12 +13,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { expenseCategories } from "@/lib/expense-categories";
+
 import { useCreateExpense } from "@/hooks/expenses/useCreateExpense";
+import { useUpdateExpense } from "@/hooks/expenses/useUpdateExpense";
 
+import { Expense } from "@/types/expense";
 
-export default function ExpenseDialog() {
-  const [open, setOpen] =
+type ExpenseDialogProps = {
+  mode?: "create" | "edit";
+  expense?: Expense;
+  open?: boolean;
+  onOpenChange?: (
+    open: boolean
+  ) => void;
+};
+
+export default function ExpenseDialog({
+  mode = "create",
+  expense,
+  open: controlledOpen,
+  onOpenChange,
+}: ExpenseDialogProps) {
+
+  const [internalOpen, setInternalOpen] =
     useState(false);
+
+  const open =
+    controlledOpen ?? internalOpen;
+
+  const setOpen =
+    onOpenChange ?? setInternalOpen;
 
   const [title, setTitle] =
     useState("");
@@ -35,26 +59,87 @@ export default function ExpenseDialog() {
   const [notes, setNotes] =
     useState("");
 
+  useEffect(() => {
+    if (
+      mode === "edit" &&
+      expense
+    ) {
+      setTitle(expense.title);
+
+      setAmount(
+        expense.amount.toString()
+      );
+
+      setCategory(
+        expense.category
+      );
+
+      setExpenseDate(
+        expense.expenseDate
+          ?.split("T")[0] ?? ""
+      );
+
+      setNotes(
+        expense.notes ?? ""
+      );
+    }
+  }, [expense, mode]);
+
+  const resetForm = () => {
+    setTitle("");
+    setAmount("");
+    setCategory("Seeds");
+    setExpenseDate("");
+    setNotes("");
+  };
+
   const createExpense =
     useCreateExpense(() => {
       setOpen(false);
-
-      setTitle("");
-      setAmount("");
-      setCategory("Seeds");
-      setExpenseDate("");
-      setNotes("");
+      resetForm();
     });
+
+  const updateExpense =
+    useUpdateExpense(() => {
+      setOpen(false);
+    });
+
+  const handleSubmit = () => {
+    if (mode === "edit") {
+      updateExpense.mutate({
+        id: expense!._id,
+        title,
+        amount:
+          Number(amount),
+        category,
+        expenseDate,
+        notes,
+      });
+
+      return;
+    }
+
+    createExpense.mutate({
+      title,
+      amount:
+        Number(amount),
+      category,
+      expenseDate,
+      notes,
+    });
+  };
 
   return (
     <>
-      <Button
-        onClick={() =>
-          setOpen(true)
-        }
-      >
-        Add Expense
-      </Button>
+      {mode === "create" && (
+        <Button
+          onClick={() =>
+            setOpen(true)
+          }
+        >
+          Add Expense
+        </Button>
+      )}
 
       <Dialog
         open={open}
@@ -63,7 +148,9 @@ export default function ExpenseDialog() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              New Expense
+              {mode === "edit"
+                ? "Edit Expense"
+                : "New Expense"}
             </DialogTitle>
           </DialogHeader>
 
@@ -135,18 +222,11 @@ export default function ExpenseDialog() {
 
             <Button
               className="w-full"
-              onClick={() =>
-                createExpense.mutate({
-                  title,
-                  amount:
-                    Number(amount),
-                  category,
-                  expenseDate,
-                  notes,
-                })
-              }
+              onClick={handleSubmit}
             >
-              Save Expense
+              {mode === "edit"
+                ? "Update Expense"
+                : "Save Expense"}
             </Button>
 
           </div>
