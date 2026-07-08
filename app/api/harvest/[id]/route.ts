@@ -1,13 +1,13 @@
 import { auth } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
-import Expense from "@/models/Expense";
+import Harvest from "@/models/Harvest";
 import { NextResponse } from "next/server";
+
 
 export async function PUT(
     req: Request,
-    { params }: { params: Promise<{id:string}> }
-){
-
+    { params }: { params: Promise<{ id: string }> }
+) {
     try {
         const session = await auth();
 
@@ -16,23 +16,25 @@ export async function PUT(
                 { message: "Unauthorized" },
                 { status: 401 }
             )
-        }
+        };
 
         const { id } = await params;
         const body = await req.json();
 
         await connectDB();
 
-        const expense = await Expense.findOneAndUpdate(
+        const harvest = await Harvest.findOneAndUpdate(
             {
                 _id: id,
                 userId: session.user.id
             },
             {
-                title: body.title,
-                amount: body.amount,
-                category: body.category,
-                expenseDate: body.expenseDate,
+                cropId: body.cropId,
+                quantity: body.quantity,
+                unit: body.unit,
+                sellingPrice: body.sellingPrice,
+                totalRevenue: body.totalRevenue,
+                harvestDate: body.harvestDate,
                 notes: body.notes
             },
             {
@@ -40,18 +42,20 @@ export async function PUT(
             }
         );
 
-        if (!expense) {
+        if(!harvest){
             return NextResponse.json(
-                { message: "Expense not found" },
+                { message: "Harvest not found" },
                 { status: 404 }
-            );
+            )
         }
-return NextResponse.json(expense);
+
+        return NextResponse.json(harvest)
+
     } catch (error) {
         console.error(error);
 
         return NextResponse.json(
-            { message: "Failed to update expense" },
+            { message: "Failed to update harvest" },
             { status: 500 }
         )
     }
@@ -60,35 +64,42 @@ return NextResponse.json(expense);
 export async function DELETE(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
-) {
-    
+){
     try {
         const session = await auth();
 
-        if (!session?.user?.id){
+        if(!session?.user?.id){
             return NextResponse.json(
                 { message: "Unauthorized" },
                 { status: 401 }
-            )
-        }
+            );
+        };
 
         const { id } = await params;
-
+        
         await connectDB();
 
-        await Expense.findOneAndDelete({
+        const harvest = await Harvest.findOneAndDelete({
             _id: id,
             userId: session.user.id
         });
 
+        if(!harvest){
+            return NextResponse.json(
+                { message: "Harvest not found" },
+                { status: 404 }
+            )
+        };
+
         return NextResponse.json({
-            message: "Expense deleted",
+            message: "Harvest deleted successfully"
         });
+
     } catch (error) {
         console.error(error);
 
         return NextResponse.json(
-            { message: "Failed to delete expense" },
+            { message: "Failed to delete harvest" },
             { status: 500 }
         )
     }

@@ -1,10 +1,25 @@
+import HarvestDialog from "@/components/harvest/HarvestDialog";
+import HarvestList from "@/components/harvest/HarvestList";
 
-const HarvestsPage = () => {
-    return (
+export default function HarvestsPage() {
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
         <div>
-            Harvest Page
-        </div>
-    )
-}
+          <h1 className="text-2xl font-bold">
+            Harvest Records
+          </h1>
 
-export default HarvestsPage
+          <p className="text-muted-foreground">
+            Track harvested crops,
+            yield, and revenue.
+          </p>
+        </div>
+
+        <HarvestDialog />
+      </div>
+
+      <HarvestList />
+    </div>
+  );
+}
