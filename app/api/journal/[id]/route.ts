@@ -1,86 +1,46 @@
-import { auth } from "@/lib/auth";
-import { connectDB } from "@/lib/mongodb";
 import Journal from "@/models/Journal";
 import { NextResponse } from "next/server";
-
+import { requireUser, dbConnect, handleError } from "@/lib/api";
 
 export async function PATCH(
-    req: Request,
-    { params }: { params: Promise<{ id: string }> }
-){
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await requireUser();
 
-    try {
-        const session = await auth();
+    const { id } = await params;
+    const body = await req.json();
 
-        if(!session?.user?.id){
-            return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 }
-            );
-        }
+    await dbConnect();
 
-        const { id } = await params;
-        
-        const body = await req.json();
+    const journal = await Journal.findOneAndUpdate(
+      { _id: id, userId: session.user.id },
+      { title: body.title, content: body.content },
+      { new: true }
+    );
 
-        await connectDB();
-
-        const journal = await Journal.findOneAndUpdate(
-            {
-                _id: id,
-                userId: session.user.id
-            },
-            {
-                title: body.title,
-                content: body.content
-            },
-            { new: true }
-        );
-
-        return NextResponse.json(journal);
-
-    } catch (error) {
-        console.error(error);
-
-        return NextResponse.json(
-            { message: "Failed to update journal" },
-            { status: 500 }
-        );
-    }
+    return NextResponse.json(journal);
+  } catch (error) {
+    return handleError(error);
+  }
 }
 
 export async function DELETE(
-    req: Request,
-    { params }: { params: Promise<{ id: string }> }
-){
-    try {
-        const session = await auth();
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await requireUser();
 
-        if(!session?.user?.id){
-            return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 }
-            )
-        }
+    const { id } = await params;
 
-        const { id } = await params;
+    await dbConnect();
 
-        await connectDB();
+    await Journal.findOneAndDelete({ _id: id, userId: session.user.id });
 
-        await Journal.findOneAndDelete({
-            _id: id,
-            userId: session.user.id
-        });
-        
-        return NextResponse.json({
-            message: "Journal deleted"
-        })
-    } catch (error) {
-        console.error(error);
-
-        return NextResponse.json(
-            { message: "Failed to delete journal" },
-            { status: 500 }
-        );
-    }
+    return NextResponse.json({ message: "Journal deleted" });
+  } catch (error) {
+    return handleError(error);
+  }
 }

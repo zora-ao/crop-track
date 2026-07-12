@@ -1,66 +1,40 @@
-import { auth } from "@/lib/auth";
-import { connectDB } from "@/lib/mongodb";
 import Crop from "@/models/Crop";
 import { NextResponse } from "next/server";
+import { requireUser, dbConnect, handleError } from "@/lib/api";
 
 export async function POST(req: Request) {
     try {
-        const session = await auth();
-
-        if (!session || !session.user) {
-            return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 }
-            );
-        }
+        const session = await requireUser();
 
         const body = await req.json();
 
-        await connectDB();
+        await dbConnect();
 
         const crop = await Crop.create({
             ...body,
             userId: session.user.id,
         });
 
-        return NextResponse.json(crop);
-
+        return NextResponse.json(crop, { status: 201 });
     } catch (error) {
-        console.error(error);
-
-        return NextResponse.json(
-            { message: "Server Error" },
-            { status: 500 }
-        )
+        return handleError(error);
     }
 }
 
 export async function GET() {
     try {
-        const session = await auth();
+        const session = await requireUser();
 
-        if (!session){
-            return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 }
-            )
-        }
-
-        await connectDB();
+        await dbConnect();
 
         const crops = await Crop.find({
             userId: session.user.id,
         }).sort({
-            createdAt: -1
+            createdAt: -1,
         });
 
-        return NextResponse.json(crops)
+        return NextResponse.json(crops);
     } catch (error) {
-        console.error(error);
-
-        return NextResponse.json(
-            { message: "Server Error" },
-            { status: 500 }
-        )
+        return handleError(error);
     }
 }

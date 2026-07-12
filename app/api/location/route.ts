@@ -1,18 +1,17 @@
-import { auth } from "@/lib/auth";
-import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import { NextResponse } from "next/server";
+import { requireUser, dbConnect, handleError } from "@/lib/api";
 
 export async function PATCH(req: Request) {
   try {
-    const session = await auth();
+    const session = await requireUser();
 
     const body = await req.json();
 
-    await connectDB();
+    await dbConnect();
 
     const updatedUser = await User.findByIdAndUpdate(
-      session?.user?.id,
+      session.user.id,
       {
         farmLocation: {
           latitude: body.latitude,
@@ -23,16 +22,8 @@ export async function PATCH(req: Request) {
       { new: true }
     );
 
-    return NextResponse.json({
-      message: "Location saved",
-      user: updatedUser
-    });
+    return NextResponse.json({ message: "Location saved", user: updatedUser });
   } catch (error) {
-    console.error(error);
-
-    return NextResponse.json(
-      { message: "Server error" },
-      { status: 500 }
-    );
+    return handleError(error);
   }
 }

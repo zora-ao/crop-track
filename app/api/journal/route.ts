@@ -1,55 +1,30 @@
-import { auth } from "@/lib/auth";
-import { connectDB } from "@/lib/mongodb";
 import Journal from "@/models/Journal";
 import { NextResponse } from "next/server";
+import { requireUser, dbConnect, handleError } from "@/lib/api";
 
-
-export async function GET(){
-
+export async function GET() {
     try {
-        const session = await auth();
+        const session = await requireUser();
 
-        if(!session?.user?.id){
-            return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 }
-            );
-        }
-        
-        await connectDB();
+        await dbConnect();
 
-        const journals = await Journal.find(
-            {userId: session.user.id}
-        ).sort({
-            createdAt: -1,
-        }).limit(5)
+        const journals = await Journal.find({ userId: session.user.id })
+            .sort({ createdAt: -1 })
+            .limit(5);
 
         return NextResponse.json(journals);
-
     } catch (error) {
-        console.error(error);
-
-        return NextResponse.json(
-            { messages: "Failed to fetch journals" },
-            { status: 500 }
-        )
+        return handleError(error);
     }
 }
 
-export async function POST(req: Request){
+export async function POST(req: Request) {
     try {
-        const session = await auth();
-
-        if(!session?.user?.id){
-            return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 }
-            );
-        }
+        const session = await requireUser();
 
         const body = await req.json();
 
-        await connectDB();
+        await dbConnect();
 
         const journal = await Journal.create({
             title: body.title,
@@ -57,16 +32,8 @@ export async function POST(req: Request){
             userId: session.user.id,
         });
 
-        return NextResponse.json(
-            journal,
-            { status: 201 }
-        );
+        return NextResponse.json(journal, { status: 201 });
     } catch (error) {
-        console.error(error);
-
-        return NextResponse.json(
-            { message: "Failed to create journal" },
-            { status: 500 }
-        )
+        return handleError(error);
     }
-};
+}

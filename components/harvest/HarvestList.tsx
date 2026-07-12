@@ -1,204 +1,133 @@
 "use client";
 
-import { Calendar, MoreVertical } from "lucide-react";
-
-import {
-Card,
-CardContent,
-CardHeader,
-CardTitle,
-CardDescription,
-} from "@/components/ui/card";
-
-import {
-DropdownMenu,
-DropdownMenuContent,
-DropdownMenuItem,
-DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import { Button } from "@/components/ui/button";
-
+import { Download } from "lucide-react";
 import { useState } from "react";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 import HarvestDialog from "./HarvestDialog";
 import { useHarvest } from "@/hooks/harvest/useHarvest";
 import DeleteHarvestDialog from "./DeleteHarvestDialog";
+import { HarvestEmptyState } from "./HarvestEmptyState";
+import { HarvestTable } from "./HarvestTable";
+import { HarvestMobileCards } from "./HarvestMobileCards";
+import { type HarvestRecord, formatShortDate, getCropName } from "@/lib/harvest-utils";
 
 export default function HarvestList() {
-const {
-data = [],
-isLoading,
-} = useHarvest();
+  const { data = [], isLoading } = useHarvest();
+  const [selectedHarvest, setSelectedHarvest] = useState<HarvestRecord | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
-const [selectedHarvest, setSelectedHarvest] =
-useState<any>(null);
+  if (isLoading) {
+    return (
+      <Card className="w-full shadow-sm border-zinc-200">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold tracking-tight text-zinc-900">Harvest Records</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-center py-8">
+          <p className="text-sm text-zinc-500 animate-pulse">Loading records...</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
-const [editOpen, setEditOpen] =
-useState(false);
+  const harvests = (data ?? []) as HarvestRecord[];
 
-const [deleteOpen, setDeleteOpen] =
-useState(false);
+  const handleEdit = (harvest: HarvestRecord) => {
+    setSelectedHarvest(harvest);
+    setEditOpen(true);
+  };
 
-if (isLoading) {
-return ( <Card> <CardHeader> <CardTitle>
-Harvest Records </CardTitle> </CardHeader>
+  const handleDelete = (harvest: HarvestRecord) => {
+    setSelectedHarvest(harvest);
+    setDeleteOpen(true);
+  };
 
-    <CardContent>
-      <p>Loading harvests...</p>
-    </CardContent>
-  </Card>
-);
+  const exportToCsv = () => {
+    const rows = [
+      ["Crop Name", "Quantity", "Unit", "Unit Price", "Total Revenue", "Harvest Date", "Notes"],
+      ...harvests.map((harvest) => [
+        getCropName(harvest),
+        harvest.quantity ?? 0,
+        harvest.unit ?? "",
+        harvest.sellingPrice ?? 0,
+        harvest.totalRevenue ?? 0,
+        formatShortDate(harvest.harvestDate),
+        harvest.notes ?? "",
+      ]),
+    ];
 
-}
+    const csvContent = rows
+      .map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(","))
+      .join("\n");
 
-return (
-<> <Card> <CardHeader> <CardTitle>
-Harvest Records </CardTitle>
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "harvest-records.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
-      <CardDescription>
-        Track harvested crops and
-        generated revenue.
-      </CardDescription>
-    </CardHeader>
-
-    <CardContent>
-      {data.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          No harvest records yet.
-        </p>
-      ) : (
-        <div className="space-y-4">
-
-          {data.map((harvest) => (
-            <div
-              key={harvest._id}
-              className="border rounded-lg p-4"
-            >
-              <div className="flex justify-between items-start">
-
-                <div>
-                  <h4 className="font-medium">
-                    {harvest.cropId?.cropName ??
-                      "Unknown Crop"}
-                  </h4>
-
-                  <p className="text-sm text-muted-foreground">
-                    {harvest.quantity}
-                    {" "}
-                    {harvest.unit}
-                  </p>
-                </div>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                    >
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent align="end">
-
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedHarvest(
-                          harvest
-                        );
-
-                        setEditOpen(
-                          true
-                        );
-                      }}
-                    >
-                      Edit
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem
-                      className="text-red-500"
-                      onClick={() => {
-                        setSelectedHarvest(
-                          harvest
-                        );
-
-                        setDeleteOpen(
-                          true
-                        );
-                      }}
-                    >
-                      Delete
-                    </DropdownMenuItem>
-
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-
-              <div className="mt-3 space-y-1">
-
-                <p className="text-sm">
-                  Price:
-                  {" "}
-                  ₱
-                  {harvest.sellingPrice.toLocaleString()}
-                  /
-                  {harvest.unit}
-                </p>
-
-                <p className="font-semibold text-green-600">
-                  Revenue:
-                  {" "}
-                  ₱
-                  {harvest.totalRevenue.toLocaleString()}
-                </p>
-
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Calendar className="h-3 w-3" />
-
-                  {new Date(
-                    harvest.harvestDate
-                  ).toLocaleDateString()}
-                </div>
-
-                {harvest.notes && (
-                  <p className="text-sm mt-2">
-                    {harvest.notes}
-                  </p>
-                )}
-
-              </div>
-            </div>
-          ))}
-
-        </div>
-      )}
-    </CardContent>
-  </Card>
-
-  {selectedHarvest && (
+  return (
     <>
-      <HarvestDialog
-        mode="edit"
-        harvest={selectedHarvest}
-        open={editOpen}
-        onOpenChange={
-          setEditOpen
-        }
-      />
+      <Card className="w-full shadow-sm border-zinc-200 overflow-hidden">
+        <CardHeader className="border-b border-zinc-100 bg-zinc-50/50 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <CardTitle className="text-xl font-semibold tracking-tight text-zinc-900">
+                Harvest Records
+              </CardTitle>
+              <CardDescription className="text-zinc-500 mt-1">
+                Manage your crop yields, pricing distributions, and historical revenue tracking.
+              </CardDescription>
+            </div>
+            <Button onClick={exportToCsv} variant="outline" className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Export CSV
+            </Button>
+          </div>
+        </CardHeader>
 
-      <DeleteHarvestDialog
-        harvestId={
-          selectedHarvest._id
-        }
-        open={deleteOpen}
-        onOpenChange={
-          setDeleteOpen
-        }
-      />
+        <CardContent className="p-0">
+          {harvests.length === 0 ? (
+            <HarvestEmptyState />
+          ) : (
+            <>
+              <HarvestTable harvests={harvests} onEdit={handleEdit} onDelete={handleDelete} />
+              <HarvestMobileCards harvests={harvests} onEdit={handleEdit} onDelete={handleDelete} />
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Dialog Triggers */}
+      {selectedHarvest && (
+        <>
+          <HarvestDialog
+            mode="edit"
+            harvest={selectedHarvest}
+            open={editOpen}
+            onOpenChange={setEditOpen}
+          />
+          <DeleteHarvestDialog
+            harvestId={selectedHarvest._id}
+            open={deleteOpen}
+            onOpenChange={setDeleteOpen}
+          />
+        </>
+      )}
     </>
-  )}
-</>
-);
+  );
 }
