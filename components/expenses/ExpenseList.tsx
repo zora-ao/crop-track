@@ -21,6 +21,7 @@ import { useExpenses } from "@/hooks/expenses/useExpenses";
 import ExpenseDialog from "./ExpenseDialog";
 import DeleteExpenseDialog from "./DeleteExpenseDialog";
 import { Expense } from "@/types/expense";
+import { TableSkeleton } from "@/components/ui/loading-skeleton";
 
 type SelectedExpense = Expense | null;
 
@@ -30,15 +31,16 @@ export default function ExpenseList() {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
+  const totalExpenses = data.reduce((sum, expense) => sum + expense.amount, 0);
+
   if (isLoading) {
     return (
       <Card>
         <CardHeader>
           <CardTitle>Expenses</CardTitle>
         </CardHeader>
-
-        <CardContent>
-          <p>Loading expenses...</p>
+        <CardContent className="p-6">
+          <TableSkeleton rows={4} columns={5} />
         </CardContent>
       </Card>
     );
@@ -51,6 +53,15 @@ export default function ExpenseList() {
       </CardHeader>
 
       <CardContent className="p-0">
+        <div className="border-b bg-zinc-50/80 px-6 py-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+              Total expenses
+            </p>
+            <p className="text-2xl font-semibold text-zinc-900">₱{totalExpenses.toLocaleString()}</p>
+          </div>
+        </div>
+
         {data.length === 0 ? (
           <div className="p-4 text-sm text-zinc-500">No expenses yet.</div>
         ) : (

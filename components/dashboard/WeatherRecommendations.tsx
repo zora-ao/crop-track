@@ -1,83 +1,77 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useWeather } from "@/hooks/useWeather";
 import { getWeatherRecommendations } from "@/lib/weather-recommendations";
 import { Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
+import { Skeleton } from "@/components/ui/loading-skeleton";
 
 export default function WeatherRecommendations() {
   const { data, isLoading } = useWeather();
 
   if (isLoading) {
     return (
-      <Card className="w-full max-w-md animate-pulse">
-        <div className="h-40 bg-muted rounded-xl" />
-      </Card>
+      <div className="space-y-3 w-full">
+        <Skeleton height={48} className="rounded-xl" />
+        <Skeleton height={48} className="rounded-xl" />
+        <Skeleton height={48} className="rounded-xl" />
+      </div>
     );
   }
 
-  // Handle either no data or data without actual weather parameters set yet
   if (!data || !data.locationSet) {
     return (
-      <Card className="w-full max-w-md border border-border/60 shadow-sm">
-        <CardContent className="flex flex-col items-center justify-center text-center py-6 px-4">
-          <AlertCircle className="h-5 w-5 text-muted-foreground mb-2" />
-          <p className="text-sm font-medium text-muted-foreground">
-            No recommendations available
+      <div className="flex items-center gap-4 p-4 border border-dashed rounded-xl bg-stone-50/50 w-full">
+        <div className="p-2.5 bg-stone-100 rounded-full text-stone-400 shrink-0">
+          <AlertCircle className="h-5 w-5" />
+        </div>
+        <div>
+          <p className="font-semibold text-xs text-stone-700">No recommendations available</p>
+          <p className="text-[11px] text-stone-400 mt-0.5">
+            Please map out or authorize your farm location setup first to compile advisory lists.
           </p>
-          <p className="text-xs text-muted-foreground/80 mt-0.5">
-            Please set a farm location first to generate smart insights.
-          </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   const recommendations = getWeatherRecommendations(
-    data.weather?.temperature_2m,
-    data.weather?.relative_humidity_2m,
-    data.weather?.precipitation
+    data.weather?.temperature_2m ?? 0,
+    data.weather?.relative_humidity_2m ?? 0,
+    data.weather?.precipitation ?? 0
   );
 
   return (
-    <Card className="w-full max-w-md border border-border/60 bg-card shadow-sm">
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-md">
-            <Sparkles className="h-4 w-4" />
-          </div>
-          <div>
-            <CardTitle className="text-lg font-semibold tracking-tight">
-              Smart Actions
-            </CardTitle>
-            <CardDescription className="text-xs mt-0.5">
-              AI-generated farm tasks based on current metrics
-            </CardDescription>
-          </div>
-        </div>
-      </CardHeader>
+    <div className="w-full">
+      {/* Subtitle context flag header */}
+      <div className="flex items-center gap-1.5 mb-4 text-[11px] font-medium text-stone-400 uppercase tracking-wider">
+        <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
+        <span>Real-Time Condition Advisory</span>
+      </div>
 
-      <CardContent>
-        {recommendations.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-2 text-center">
-            Conditions are stable. No urgent actions needed today.
+      {recommendations.length === 0 ? (
+        <div className="text-center py-6 border border-dashed border-stone-200 rounded-xl bg-stone-50/30">
+          <p className="text-xs font-medium text-stone-400">
+            Microclimate is currently stable. No operational field changes are flagged for today.
           </p>
-        ) : (
-          <div className="space-y-2.5">
-            {recommendations.map((item, index) => (
-              <div 
-                key={index} 
-                className="flex items-start gap-3 p-3 rounded-xl border border-emerald-500/10 bg-emerald-500/[0.02] dark:bg-emerald-500/[0.04] hover:bg-emerald-500/[0.04] transition-colors"
-              >
-                <CheckCircle2 className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
-                <span className="text-sm font-medium text-foreground/90 leading-tight">
-                  {item}
-                </span>
+        </div>
+      ) : (
+        /* Switched to a multi-column flex layout map to utilize width on large viewports */
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {recommendations.map((item, index) => (
+            <div 
+              key={index} 
+              className="flex items-start gap-3 p-3.5 rounded-xl border border-stone-100 bg-stone-50/40 hover:bg-stone-50 hover:border-stone-200/80 transition-all duration-200"
+            >
+              <div className="mt-0.5 bg-emerald-50 text-emerald-600 rounded-full p-0.5 shrink-0">
+                <CheckCircle2 className="h-3.5 w-3.5" />
               </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              <span className="text-xs font-medium text-stone-700 leading-normal">
+                {item}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

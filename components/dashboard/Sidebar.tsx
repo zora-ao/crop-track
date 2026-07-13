@@ -9,8 +9,13 @@ import {
     Wheat,
     Settings,
 } from "lucide-react";
+import LogoutButton from "./LogoutButton";
 
-const Sidebar = () => {
+interface SidebarProps {
+    name?: string;
+}
+
+const Sidebar = ({ name }: SidebarProps) => {
     const pathname = usePathname();
 
     const navItems = [
@@ -22,16 +27,22 @@ const Sidebar = () => {
     ];
 
     return (
-        <>
-            <div className="hidden md:flex flex-col w-64 h-full p-5 bg-white text-stone-800">
-                <div className="flex items-center gap-2 mb-8 px-2">
-                    <span className="text-2xl">🌱</span>
-                    <h2 className="text-xl font-bold tracking-tight text-stone-900">
-                        Farm<span className="text-emerald-700">Track</span>
+        <div className="flex flex-col w-64 h-full bg-stone-50 border-r md:border-r-stone-200/80 text-stone-700 select-none shrink-0">
+            {/* Header / Brand */}
+            <div className="h-16 flex items-center px-6 border-b border-stone-200/60 shrink-0">
+                <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white shadow-sm shadow-emerald-600/20 shrink-0">
+                        <Sprout className="h-4.5 w-4.5" />
+                    </div>
+                    <h2 className="text-sm font-semibold tracking-tight text-stone-900">
+                        Farm<span className="text-emerald-600">Track</span>
                     </h2>
                 </div>
+            </div>
 
-                <nav className="space-y-1.5 flex-1">
+            {/* Navigation Links List */}
+            <div className="flex-1 px-4 py-6 overflow-y-auto">
+                <nav className="space-y-1">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href;
@@ -40,47 +51,32 @@ const Sidebar = () => {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150 ${
                                     isActive
-                                        ? "bg-emerald-50 text-emerald-800 shadow-sm border border-emerald-100/50"
-                                        : "text-stone-600 hover:bg-stone-100/80 hover:text-stone-900"
+                                        ? "bg-white text-emerald-700 shadow-sm border border-stone-200/50"
+                                        : "text-stone-600 hover:bg-stone-200/50 hover:text-stone-900"
                                 }`}
                             >
-                                <Icon className={`h-4.5 w-4.5 ${isActive ? "text-emerald-700" : "text-stone-400"}`} />
-                                {item.label}
-                            </Link>
-                        );
-                    })}
-                </nav>
-            </div>
-
-            <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[85%] max-w-sm">
-                <nav className="flex flex-row items-center justify-between bg-white/90 backdrop-blur-md px-6 py-3 rounded-full shadow-xl border border-stone-200/60">
-                    {navItems.map((item) => {
-                        const Icon = item.icon;
-                        const isActive = pathname === item.href;
-
-                        return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                title={item.label}
-                                className={`flex items-center justify-center p-2.5 rounded-full transition-all duration-200 relative ${
-                                    isActive 
-                                        ? "bg-emerald-50 text-emerald-700 scale-110 shadow-sm border border-emerald-100/30" 
-                                        : "text-stone-500 hover:text-stone-800"
-                                }`}
-                            >
-                                <Icon className="h-5 w-5" />
                                 {isActive && (
-                                    <span className="absolute -bottom-1 h-1 w-1 bg-emerald-600 rounded-full" />
+                                    <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r bg-emerald-600" />
                                 )}
+                                <Icon className={`h-4.5 w-4.5 transition-colors shrink-0 ${isActive ? "text-emerald-600" : "text-stone-400 group-hover:text-stone-600"}`} />
+                                <span className="truncate">{item.label}</span>
                             </Link>
                         );
                     })}
                 </nav>
             </div>
-        </>
+
+            {/* Footer Profile Node & Sign Out */}
+            <div className="p-4 border-t border-stone-200/60 bg-stone-100/50 flex flex-col gap-3 shrink-0">
+                <div className="px-2">
+                    <p className="text-xs font-medium text-stone-800 truncate">{name || "Farmer"}</p>
+                    <p className="text-[11px] text-stone-500 truncate">Workspace manager</p>
+                </div>
+                <LogoutButton />
+            </div>
+        </div>
     );
 };
 

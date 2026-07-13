@@ -19,6 +19,7 @@ import { HarvestEmptyState } from "./HarvestEmptyState";
 import { HarvestTable } from "./HarvestTable";
 import { HarvestMobileCards } from "./HarvestMobileCards";
 import { type HarvestRecord, formatShortDate, getCropName } from "@/lib/harvest-utils";
+import { TableSkeleton } from "@/components/ui/loading-skeleton";
 
 export default function HarvestList() {
   const { data = [], isLoading } = useHarvest();
@@ -28,12 +29,19 @@ export default function HarvestList() {
 
   if (isLoading) {
     return (
-      <Card className="w-full shadow-sm border-zinc-200">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold tracking-tight text-zinc-900">Harvest Records</CardTitle>
+      <Card className="w-full shadow-sm border-zinc-200 overflow-hidden">
+        <CardHeader className="border-b border-zinc-100 bg-zinc-50/50 pb-4">
+          <div>
+            <CardTitle className="text-xl font-semibold tracking-tight text-zinc-900">
+              Harvest Records
+            </CardTitle>
+            <CardDescription className="text-zinc-500 mt-1">
+              Manage your crop yields, pricing distributions, and historical revenue tracking.
+            </CardDescription>
+          </div>
         </CardHeader>
-        <CardContent className="flex justify-center py-8">
-          <p className="text-sm text-zinc-500 animate-pulse">Loading records...</p>
+        <CardContent className="p-6">
+          <TableSkeleton rows={4} columns={6} />
         </CardContent>
       </Card>
     );

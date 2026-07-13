@@ -4,6 +4,7 @@ import { Crop } from "@/types/crop";
 import { useEffect, useState } from "react";
 import CropCard from "./CropCard";
 import { useCrops } from "@/hooks/useCrops";
+import { CardSkeleton } from "@/components/ui/loading-skeleton";
 
 const CropList = () => {
     
@@ -14,7 +15,7 @@ const CropList = () => {
     } = useCrops();
 
     if (isLoading) {
-        return <p>Loading crops...</p>;
+        return <CardSkeleton count={3} />;
     }
 
     if (error) {

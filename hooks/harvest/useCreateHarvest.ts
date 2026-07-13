@@ -6,6 +6,7 @@ type CreateHarvestInput = {
     quantity: number;
     unit: string;
     sellingPrice: number;
+    totalRevenue: number;
     harvestDate: string;
     notes?: string;
 };

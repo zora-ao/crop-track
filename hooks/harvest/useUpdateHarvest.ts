@@ -7,6 +7,7 @@ interface UpdateHarvestProps {
     quantity: number;
     unit: string;
     sellingPrice: number;
+    totalRevenue: number;
     harvestDate: string;
     notes?: string;
 }
@@ -23,6 +24,7 @@ export const useUpdateHarvest = (
             quantity,
             unit,
             sellingPrice,
+            totalRevenue,
             harvestDate,
             notes,
         }: UpdateHarvestProps) => {
@@ -36,6 +38,7 @@ export const useUpdateHarvest = (
                     quantity,
                     unit,
                     sellingPrice,
+                    totalRevenue,
                     harvestDate,
                     notes,
                 })

@@ -116,15 +116,16 @@ export default function HarvestDialog({
     });
 
   const handleSubmit = () => {
+    const quantityNum = Number(quantity);
+    const sellingPriceNum = Number(sellingPrice);
+    const totalRevenue = quantityNum * sellingPriceNum;
+
     const payload = {
       cropId,
-      quantity:
-        Number(quantity),
+      quantity: quantityNum,
       unit,
-      sellingPrice:
-        Number(
-          sellingPrice
-        ),
+      sellingPrice: sellingPriceNum,
+      totalRevenue,
       harvestDate,
       notes,
     };

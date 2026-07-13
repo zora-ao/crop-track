@@ -1,38 +1,36 @@
-import Navbar from '@/components/dashboard/Navbar';
 import Sidebar from '@/components/dashboard/Sidebar';
+import MobileHeader from '@/components/dashboard/MobileHeader';
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation';
 import React from 'react'
 
-const layout = async ({ children }: { children: React.ReactNode }) => {
+const Layout = async ({ children }: { children: React.ReactNode }) => {
     const session = await auth();
     
     if (!session) {
         redirect("/login")
     }
 
+    // Generate a single template component reference to share across views
+    const sidebarInstance = <Sidebar name={session.user?.name as string} />;
+
     return (
-        // 1. Fixed dimensions using h-dvh (Dynamic Viewport Height) for bulletproof mobile scrolling
         <div className="flex h-dvh w-screen overflow-hidden bg-stone-100/40 font-sans antialiased text-stone-800">
             
-            {/* 2. Responsive Sidebar Wrapper */}
-            <aside className="hidden md:block shrink-0 h-full border-r border-stone-200 bg-white">
-                <Sidebar />
+            {/* Desktop Mode Sidebar Layout Frame (Hidden entirely on small phones) */}
+            <aside className="hidden md:block shrink-0 h-full bg-white z-20">
+                {sidebarInstance}
             </aside>
 
-            {/* Main content column */}
-            <div className="flex flex-1 flex-col h-full overflow-hidden">
+            {/* Primary Action Matrix Workspace */}
+            <div className="flex flex-1 flex-col h-full overflow-hidden w-full">
                 
-                {/* 3. Blurred Sticky Header */}
-                <header className="border-b border-stone-200/80 bg-white/70 backdrop-blur-md sticky top-0 z-10 w-full shrink-0">
-                    <Navbar name={session.user?.name as string} />
-                </header>
+                {/* Mobile Top Header Banner (Mounts and runs hamburger click transitions) */}
+                <MobileHeader sidebarComponent={sidebarInstance} />
 
-                {/* 4. Widget Scroll Pane */}
-                {/* FIXED: Reduced the heavy pb-24 padding to a standard p-4 / sm:p-6 everywhere */}
-                <main className="flex-1 overflow-y-auto bg-stone-50/40 custom-scrollbar">
-                    {/* Max-width container prevents widgets from looking stretched on massive 4K monitors */}
-                    <div className="max-w-full mx-auto space-y-6">
+                {/* Main Scroll Pane for User Dashboards and UI Widgets */}
+                <main className="flex-1 overflow-y-auto bg-stone-50/40 custom-scrollbar p-4 sm:p-6 lg:p-8">
+                    <div className="max-w-full mx-auto">
                         {children}
                     </div>
                 </main>
@@ -42,4 +40,4 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
     )
 }
 
-export default layout;
+export default Layout;

@@ -6,7 +6,7 @@ export type HarvestRecord = Harvest & { cropId?: string | Partial<Crop> };
 export function getCropName(h: HarvestRecord) {
   const cropId = h.cropId;
   if (!cropId || typeof cropId === "string") return "Unknown Crop";
-  return cropId.cropName ?? "Unknown Crop";
+  return (cropId as Partial<Crop>).cropName ?? "Unknown Crop";
 }
 
 export function formatDate(date?: string) {

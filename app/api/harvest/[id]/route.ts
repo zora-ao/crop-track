@@ -23,6 +23,9 @@ export async function PUT(
 
         await connectDB();
 
+        // Calculate totalRevenue if not provided (for backward compatibility)
+        const totalRevenue = body.totalRevenue ?? (body.quantity * body.sellingPrice);
+
         const harvest = await Harvest.findOneAndUpdate(
             {
                 _id: id,
@@ -33,7 +36,7 @@ export async function PUT(
                 quantity: body.quantity,
                 unit: body.unit,
                 sellingPrice: body.sellingPrice,
-                totalRevenue: body.totalRevenue,
+                totalRevenue,
                 harvestDate: body.harvestDate,
                 notes: body.notes
             },

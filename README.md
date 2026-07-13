@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CropTrack
 
-## Getting Started
+CropTrack is a modern farm management web app designed to help users organize daily farm work in one simple place. It brings together crop tracking, harvest records, expense logging, weather insights, and progress notes in a clean and practical dashboard.
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+CropTrack is built for farmers and small farm operators who want a clear view of their operations without using complicated software. The platform is simple to use, easy to understand, and focused on helping users stay informed and productive.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Main Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Crop management with status tracking and planning details
+- Harvest record keeping with revenue tracking
+- Expense logging for farm inputs and operations
+- Weather-based recommendations for better decision-making
+- Journal support for daily notes and farm updates
+- Clean dashboard view for quick monitoring of farm activity
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Best Use Cases
 
-## Learn More
+CropTrack is best suited for:
 
-To learn more about Next.js, take a look at the following resources:
+- Small to medium-sized farms
+- Independent growers and producers
+- Farmers who want a simple digital record system
+- Anyone who wants to manage farm operations without heavy software
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Recommended Approach
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+For the best experience, use CropTrack as a daily farm management tool rather than a replacement for full accounting or advanced agronomy systems. It works best when used regularly to keep records current and useful for planning.
 
-## Deploy on Vercel
+## Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- MongoDB
+- NextAuth
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Purpose
+
+The goal of CropTrack is to make farm management easier, more organized, and more accessible for users who want to stay on top of their work with less effort.

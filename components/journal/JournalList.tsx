@@ -1,59 +1,53 @@
 "use client";
 
-import { Calendar, MoreVertical } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useJournals } from "@/hooks/journals/useJournals";
-import { Journal } from "@/types/journal";
-import { useState } from "react";
 import JournalItem from "./JournalItem";
+import { CardSkeleton } from "@/components/ui/loading-skeleton";
+import { BookOpen } from "lucide-react";
 
-type JournalItemProps = {
-  entry: Journal;
-};
+export default function JournalList() {
+    const { data: entries = [], isLoading } = useJournals();
 
-export default function JournalList(
-  {entry}: JournalItemProps
-) {
-  const [editOpen, setEditOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const { data = [], isLoading } = useJournals();
-
-  // Updated skeleton to match the new side-by-side header layout
-  if (isLoading) {
-    return (
-      <Card className="shadow-sm">
-        <CardHeader className="space-y-2">
-          <Skeleton className="h-5 w-1/3" />
-          <Skeleton className="h-4 w-1/2" />
-        </CardHeader>
-        <CardContent className="space-y-5">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="space-y-2 border-b pb-4 last:border-0 last:pb-0">
-              <div className="flex justify-between items-center">
-                <Skeleton className="h-4 w-1/4" />
-                <Skeleton className="h-3 w-16" />
-              </div>
-              <Skeleton className="h-4 w-full" />
+    if (isLoading) {
+        return (
+            <div className="space-y-3">
+                <CardSkeleton count={3} />
             </div>
-          ))}
-        </CardContent>
-      </Card>
-    );
-  }
+        );
+    }
 
-  return (
-    <div className="divide-y divide-border">
-      {data.map((entry) => (
-        <JournalItem
-          key={entry._id}
-          entry={entry}
-        />
-      ))}
-    </div>
-  );
+    if (entries.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-stone-200 bg-stone-50/50 p-12 text-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-stone-100 text-stone-500">
+                    <BookOpen className="h-6 w-6" />
+                </div>
+                <h3 className="mt-4 text-sm font-semibold text-stone-900">No journal entries</h3>
+                <p className="mt-1 text-sm text-stone-500 max-w-xs">
+                    Start documenting your farm activities, weather logs, or notes to keep track of progress.
+                </p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-4">
+            {/* Header Counter */}
+            <div className="flex items-center justify-between px-1">
+                <span className="text-xs font-semibold text-stone-400 uppercase tracking-wider">
+                    Recent Entries ({entries.length})
+                </span>
+            </div>
+
+            {/* Clean Vertical Stack */}
+            <div className="flex flex-col gap-3 max-h-[500px] overflow-y-auto pr-1 scrollbar-thin">
+                {entries.map((entry) => (
+                    <JournalItem
+                        key={entry._id}
+                        entry={entry}
+                    />
+                ))}
+            </div>
+        </div>
+    );
 }
