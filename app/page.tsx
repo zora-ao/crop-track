@@ -1,117 +1,103 @@
+"use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Sprout, ArrowRight } from "lucide-react";
 
-const features = [
-  {
-    title: "Track crops",
-    description: "Keep planting, growth, and harvest plans in one calm overview.",
-  },
-  {
-    title: "Manage expenses",
-    description: "Log spending quickly and stay on top of your farm finances.",
-  },
-  {
-    title: "Review progress",
-    description: "Check harvest history and notes to make smarter decisions.",
-  },
-];
+// Set to true if the user is logged in, false if not
+const isLoggedIn = false; 
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.95),rgba(245,245,244,0.9))] text-zinc-900">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6 lg:px-8">
-        <Link href="/" className="text-lg font-semibold tracking-tight text-zinc-900">
-          CropTrack
-        </Link>
-        <nav className="flex items-center gap-4 text-sm text-zinc-600">
-          <a href="#about" className="transition hover:text-zinc-900">
-            About
-          </a>
-          <Link href="/dashboard" className="rounded-full bg-zinc-900 px-4 py-2 font-medium text-white transition hover:bg-zinc-800">
-            Dashboard
+    <main className="min-h-screen bg-stone-50/60 text-stone-800 font-sans antialiased flex flex-col justify-between selection:bg-emerald-100 selection:text-emerald-900">
+      
+      {/* 1. SIMPLE HEADER */}
+      <header className="w-full bg-white border-b border-stone-200/50 select-none shrink-0">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-8">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-600 text-white shadow-sm">
+              <Sprout className="h-4 w-4" />
+            </div>
+            <span className="text-sm font-bold tracking-tight text-stone-900">
+              Crop<span className="text-emerald-600">Track</span>
+            </span>
           </Link>
-        </nav>
+          
+          <nav className="flex items-center text-xs font-medium">
+            {isLoggedIn ? (
+              <Link 
+                href="/dashboard" 
+                className="rounded-lg bg-stone-900 px-4 py-2 text-white shadow-sm transition hover:bg-stone-800"
+              >
+                Go to Dashboard
+              </Link>
+            ) : (
+              <Link 
+                href="/login" 
+                className="rounded-lg bg-emerald-600 px-4 py-2 text-white shadow-sm transition hover:bg-emerald-700"
+              >
+                Sign In
+              </Link>
+            )}
+          </nav>
+        </div>
       </header>
 
-      <section className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-12 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-20">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center rounded-full border border-zinc-200 bg-white/80 px-3 py-1 text-sm font-medium text-zinc-700 shadow-sm backdrop-blur">
-            Trusted by modern farm operators
-          </div>
-          <h1 className="mt-5 text-4xl font-semibold tracking-tight text-zinc-950 sm:text-5xl lg:text-6xl">
-            Simplify farm operations with a clear digital workspace.
-          </h1>
-          <p className="mt-4 max-w-xl text-lg leading-8 text-zinc-600">
-            Track crops, record expenses, capture harvest insights, and keep your farm notes organized in one calm platform.
-          </p>
+      {/* 2. MAIN HERO SECTION */}
+      <section className="flex-1 flex items-center">
+        <div className="mx-auto w-full max-w-6xl px-6 py-12 lg:px-8 flex flex-col gap-12 lg:flex-row lg:items-center lg:justify-between">
+          
+          {/* Left Text Block */}
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="max-w-xl"
+          >
+            <h1 className="text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl leading-[1.15]">
+              Run your farm smoothly with a clear, simple digital workspace.
+            </h1>
+            
+            <p className="mt-4 text-base leading-relaxed text-stone-500">
+              CropTrack is an easy-to-use platform built for farmers. It brings your crop tracking, harvest history, spending logs, daily notes, and weather updates into one calm dashboard so you can stay organized with less effort.
+            </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/dashboard"
-              className="rounded-full bg-zinc-900 px-5 py-3 text-sm font-medium text-white transition duration-200 hover:-translate-y-0.5 hover:bg-zinc-800"
-            >
-              Open dashboard
-            </Link>
-            <a
-              href="#about"
-              className="rounded-full border border-zinc-300 bg-white px-5 py-3 text-sm font-medium text-zinc-700 transition duration-200 hover:-translate-y-0.5 hover:border-zinc-400"
-            >
-              Learn more
-            </a>
-          </div>
-        </div>
-
-        <div className="w-full max-w-xl rounded-3xl border border-zinc-200 bg-white/90 p-6 shadow-[0_20px_60px_-25px_rgba(24,24,27,0.25)] backdrop-blur">
-          <div className="rounded-2xl border border-zinc-100 bg-zinc-50 p-4">
-            <p className="text-sm font-medium text-zinc-500">Today at a glance</p>
-            <div className="mt-4 space-y-3">
-              <div className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm transition hover:translate-x-1">
-                <span className="text-sm text-zinc-600">Crops in progress</span>
-                <span className="font-semibold text-zinc-900">12</span>
-              </div>
-              <div className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm transition hover:translate-x-1">
-                <span className="text-sm text-zinc-600">Expenses logged</span>
-                <span className="font-semibold text-zinc-900">24</span>
-              </div>
-              <div className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm transition hover:translate-x-1">
-                <span className="text-sm text-zinc-600">Harvest records</span>
-                <span className="font-semibold text-zinc-900">8</span>
-              </div>
+            <div className="mt-8">
+              <Link
+                href={isLoggedIn ? "/dashboard" : "/login"}
+                className="group inline-flex items-center gap-2 rounded-lg bg-stone-900 px-5 py-3 text-xs font-semibold text-white shadow-xs transition hover:bg-stone-800"
+              >
+                {isLoggedIn ? "Open Dashboard" : "Get Started Now"}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
             </div>
-          </div>
+          </motion.div>
+
+          {/* Right Crop Image Canvas */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="w-full max-w-md aspect-4/3 lg:aspect-square relative rounded-xl border border-stone-200 overflow-hidden bg-stone-100 shadow-xs shrink-0"
+          >
+            <Image
+              src="https://images.unsplash.com/photo-1625246333195-78d9c38ad451?q=80&w=2070&auto=format&fit=crop"
+              alt="Fresh green farm crop rows"
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-w-lg) 100vw, 40vw"
+            />
+          </motion.div>
+
         </div>
       </section>
 
-      <section id="about" className="mx-auto max-w-6xl px-6 pb-16 lg:px-8">
-        <div className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <h2 className="text-2xl font-semibold text-zinc-950">About CropTrack</h2>
-          <p className="mt-3 max-w-3xl text-base leading-7 text-zinc-600">
-            CropTrack is designed for small farm operators who want calm, dependable tools to stay organized. It brings your crops, cost tracking, harvest records, and notes into one thoughtful workspace that feels simple and trustworthy.
-          </p>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-6 pb-24 lg:px-8">
-        <div className="grid gap-4 md:grid-cols-3">
-          {features.map((feature, index) => (
-            <div
-              key={feature.title}
-              className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-md"
-              style={{ animationDelay: `${index * 80}ms` }}
-            >
-              <h3 className="text-lg font-semibold text-zinc-900">{feature.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-zinc-600">{feature.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <footer className="border-t border-zinc-200 bg-white/70">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-6 text-sm text-zinc-600 sm:flex-row sm:items-center sm:justify-between lg:px-8">
-          <p>© 2026 CropTrack. Built for better farm planning.</p>
-          <Link href="/dashboard" className="font-medium text-zinc-900 transition hover:text-zinc-700">
-            Go to dashboard
-          </Link>
+      {/* 3. FOOTER STRIP */}
+      <footer className="w-full border-t border-stone-200/50 bg-white shrink-0 select-none">
+        <div className="mx-auto max-w-6xl px-6 py-5 text-[11px] text-stone-400 text-center sm:text-left tracking-wide">
+          © 2026 CropTrack. Built to keep your farm planning organized and simple.
         </div>
       </footer>
     </main>

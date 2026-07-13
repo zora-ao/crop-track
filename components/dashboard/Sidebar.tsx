@@ -35,7 +35,7 @@ const Sidebar = ({ name }: SidebarProps) => {
                         <Sprout className="h-4.5 w-4.5" />
                     </div>
                     <h2 className="text-sm font-semibold tracking-tight text-stone-900">
-                        Farm<span className="text-emerald-600">Track</span>
+                        Crop<span className="text-emerald-600">Track</span>
                     </h2>
                 </div>
             </div>
