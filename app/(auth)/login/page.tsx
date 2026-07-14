@@ -69,19 +69,25 @@ export default function LoginPage() {
                 {/* Subtle vignette layer overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-stone-950/20" />
 
-                {/* Overlaid Testimonial Card Capsule Container (Hidden on mobile cards, highly readable on tablet/desktop) */}
+                {/* Overlaid Information Card Capsule Container */}
                 <div className="absolute bottom-6 left-6 right-6 sm:bottom-12 sm:left-12 sm:right-12 max-w-xl z-10 backdrop-blur-md bg-stone-950/40 border border-white/10 p-5 sm:p-6 rounded-xl text-white hidden sm:block">
                     <Quote className="h-5 w-5 text-emerald-400 mb-2.5 opacity-80" />
+
                     <p className="text-xs sm:text-sm font-medium text-stone-100 leading-relaxed">
-                        &ldquo;Managing crop life-cycles, multi-field yields, and tracking volatile operational asset margins across our sectors used to require disconnected text logs. This platform has aggregated our metrics into a streamlined workspace.&rdquo;
+                        &ldquo;Every successful harvest starts with good planning. Track your crops,
+                        monitor your progress, and make better farming decisions with confidence.&rdquo;
                     </p>
+
                     <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
                         <div>
-                            <p className="text-xs font-semibold text-white">Hensley Agronomics Corp</p>
-                            <p className="text-[10px] text-stone-300">Regional Operations Node</p>
+                            <p className="text-xs font-semibold text-white">CropTrack</p>
+                            <p className="text-[10px] text-stone-300">
+                                Helping farmers stay organized
+                            </p>
                         </div>
+
                         <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium tracking-wide uppercase">
-                            Verified User
+                            Smart Farming
                         </span>
                     </div>
                 </div>

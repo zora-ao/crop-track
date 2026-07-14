@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import QueryProvider from "@/providers/query-provider";
+import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -32,10 +33,12 @@ export default function RootLayout({
       className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <Toaster />
-        <QueryProvider>
-          {children}
-        </QueryProvider>
+        <SessionProvider>
+          <Toaster />
+          <QueryProvider>
+            {children}
+          </QueryProvider>
+        </SessionProvider>
       </body>
     </html>
   );

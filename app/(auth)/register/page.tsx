@@ -57,7 +57,7 @@ export default function RegisterPage() {
             {/* Right Column: High-Visibility Prominent Farm Image Showcase */}
             <div className="relative h-64 sm:h-80 lg:h-auto lg:flex-1 bg-stone-900 overflow-hidden">
                 <Image
-                    src="https://images.unsplash.com/photo-1625246333195-78d9c38ad451?q=80&w=2070&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y3JvcHxlbnwwfHwwfHx8MA%3D%3D"
                     alt="Lush green crop sprouts layout rows view"
                     fill
                     priority
@@ -71,16 +71,22 @@ export default function RegisterPage() {
                 {/* Overlaid Information Card Capsule Container */}
                 <div className="absolute bottom-6 left-6 right-6 sm:bottom-12 sm:left-12 sm:right-12 max-w-xl z-10 backdrop-blur-md bg-stone-950/40 border border-white/10 p-5 sm:p-6 rounded-xl text-white hidden sm:block">
                     <Quote className="h-5 w-5 text-emerald-400 mb-2.5 opacity-80" />
+
                     <p className="text-xs sm:text-sm font-medium text-stone-100 leading-relaxed">
-                        &ldquo;Deploying data analytics paradigms inside decentralized farm structures has changed our annual output velocity. Tracking field infrastructure metrics is no longer a luxury—it is fundamental.&rdquo;
+                        &ldquo;Every successful harvest starts with good planning. Track your crops,
+                        monitor your progress, and make better farming decisions with confidence.&rdquo;
                     </p>
+
                     <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
                         <div>
-                            <p className="text-xs font-semibold text-white">GreenHorizon Analytics</p>
-                            <p className="text-[10px] text-stone-300">Agricultural Infrastructure Lead</p>
+                            <p className="text-xs font-semibold text-white">CropTrack</p>
+                            <p className="text-[10px] text-stone-300">
+                                Helping farmers stay organized
+                            </p>
                         </div>
+
                         <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium tracking-wide uppercase">
-                            Platform Insight
+                            Smart Farming
                         </span>
                     </div>
                 </div>

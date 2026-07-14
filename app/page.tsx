@@ -4,11 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Sprout, ArrowRight } from "lucide-react";
+import { useSession } from "next-auth/react";
 
-// Set to true if the user is logged in, false if not
-const isLoggedIn = false; 
 
 export default function HomePage() {
+  
+  const { data: session } = useSession(); 
+  const isLoggedIn = !!session;
+
   return (
     <main className="min-h-screen bg-stone-50/60 text-stone-800 font-sans antialiased flex flex-col justify-between selection:bg-emerald-100 selection:text-emerald-900">
       
@@ -55,12 +58,14 @@ export default function HomePage() {
             transition={{ duration: 0.4 }}
             className="max-w-xl"
           >
-            <h1 className="text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl leading-[1.15]">
-              Run your farm smoothly with a clear, simple digital workspace.
+            <h1 className="text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl lg:text-6xl leading-[1.1]">
+              Everything you need to{" "}
+              <span className="text-emerald-600">manage your farm</span>{" "}
+              in one simple place.
             </h1>
             
-            <p className="mt-4 text-base leading-relaxed text-stone-500">
-              CropTrack is an easy-to-use platform built for farmers. It brings your crop tracking, harvest history, spending logs, daily notes, and weather updates into one calm dashboard so you can stay organized with less effort.
+            <p className="mt-5 text-base leading-relaxed text-stone-500">
+              CropTrack helps you organize farm records, monitor crop growth, and stay prepared throughout the season.
             </p>
 
             <div className="mt-8">
@@ -82,7 +87,7 @@ export default function HomePage() {
             className="w-full max-w-md aspect-4/3 lg:aspect-square relative rounded-xl border border-stone-200 overflow-hidden bg-stone-100 shadow-xs shrink-0"
           >
             <Image
-              src="https://images.unsplash.com/photo-1625246333195-78d9c38ad451?q=80&w=2070&auto=format&fit=crop"
+              src="https://images.unsplash.com/photo-1590682680695-43b964a3ae17?q=80&w=700&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Fresh green farm crop rows"
               fill
               priority
